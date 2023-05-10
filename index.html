@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Integration Example</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h1>API Integration Example<br>Online Movie Info</br></h1>
+  <form id="searchForm">
+    <input type="text" id="searchInput" placeholder="Enter a movie name" />
+    <button type="submit">Search</button>
+  </form>
+  <div id="output"></div>
+
+  <script>
+    $(document).ready(function() {
+      // Handle form submission
+      $("#searchForm").submit(function(event) {
+        event.preventDefault();
+        
+        var searchInput = $("#searchInput").val();
+        var url = "https://online-movie-database.p.rapidapi.com/auto-complete";
+        var headers = {
+          "X-RapidAPI-Key": "25dff8d537msh339163ead433a8ep15f493jsn5c7d9c81a965",
+          "X-RapidAPI-Host": "online-movie-database.p.rapidapi.com"
+        };
+        
+        $.get(url, { q: searchInput }, headers)
+          .done(function(response) {
+            var data = response.d;
+            var outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = ""; // Clear previous results
+            
+            if (data.length > 0) {
+              var result = data[0];
+              var ans = result.l + "<br>" + result.q + "<br>" + result.rank + "<br>" + result.s + "<br>" + result.y;
+              outputDiv.innerHTML = ans;
+            } else {
+              outputDiv.innerHTML = "No results found.";
+            }
+          })
+          .fail(function() {
+            var outputDiv = document.getElementById("output");
+            outputDiv.innerHTML = "Error occurred while fetching data.";
+          });
+      });
+    });
+  </script>
+</body>
+</html>
