@@ -19,21 +19,29 @@
         event.preventDefault();
         
         var searchInput = $("#searchInput").val();
-        var url = "https://online-movie-database.p.rapidapi.com/auto-complete";
-        var headers = {
-          "X-RapidAPI-Key": "25dff8d537msh339163ead433a8ep15f493jsn5c7d9c81a965",
-          "X-RapidAPI-Host": "online-movie-database.p.rapidapi.com"
+        var settings = {
+          async: true,
+          crossDomain: true,
+          url: 'https://online-movie-database.p.rapidapi.com/auto-complete?q=' + encodeURIComponent(searchInput),
+          method: 'GET',
+          headers: {
+            'X-RapidAPI-Key': '25dff8d537msh339163ead433a8ep15f493jsn5c7d9c81a965',
+            'X-RapidAPI-Host': 'online-movie-database.p.rapidapi.com'
+          }
         };
-        
-        $.get(url, { q: searchInput }, headers)
+
+        $.ajax(settings)
           .done(function(response) {
-            var data = response.d;
             var outputDiv = document.getElementById("output");
             outputDiv.innerHTML = ""; // Clear previous results
-            
-            if (data.length > 0) {
-              var result = data[0];
-              var ans = result.l + "<br>" + result.q + "<br>" + result.rank + "<br>" + result.s + "<br>" + result.y;
+
+            if (response.d.length > 0) {
+              var result = response.d[0];
+              var ans = "<strong>Title:</strong> " + result.l + "<br>" +
+                        "<strong>Quote:</strong> " + result.q + "<br>" +
+                        "<strong>Rank:</strong> " + result.rank + "<br>" +
+                        "<strong>Summary:</strong> " + result.s + "<br>" +
+                        "<strong>Year:</strong> " + result.y;
               outputDiv.innerHTML = ans;
             } else {
               outputDiv.innerHTML = "No results found.";
